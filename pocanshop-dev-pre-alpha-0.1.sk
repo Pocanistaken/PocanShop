@@ -1,0 +1,630 @@
+#
+# [WARNING] THIS IS CUSTOM VERSION dev-pre-alpha-0.1 SET FOR DEVELOPERS IF YOU KNOW SKRIPT LANGUAGE ADJUST ACCORDING TO YOURSELF
+# [WARNING] EVERYTHING IS NOT COMPLETELY FINISHED IN THIS VERSION 
+# [WARNING] YOU CAN ONLY USE IT VIA YAML NOT COMMANDS
+# SKRIPT COMMUNITY DISCORD LINK = https://discord.gg/h86Dh9rPbv You can get help with your skripts
+#
+
+
+on load:
+	connect to yaml value "Options.Token" from "discord" with name "PocanShop"
+	if last vixio error contains "token is wrong":
+		PocanShopMessage("Please define a valid disord token.", "Console")
+on load:
+	load yaml "plugins/PocanShop/plugin.yml" as "plugin"
+	if yaml "plugin" is empty:
+		set yaml value "Main.Name" from "plugin" to "PocanShop"
+		set yaml value "Main.Author" from "plugin" to "Pocan"
+		set yaml value "Main.Version" from "plugin" to 1.0
+		save yaml "plugin"
+	load yaml "plugins/PocanShop/config.yml" as "config"
+	if yaml "config" is empty:
+		set yaml value "Menu.Name" from "config" to "&eShop"
+		set yaml value "Menu.Size" from "config" to 6
+		set yaml value "Categories.Swords.Name" from "config" to "&cSwords"
+		set yaml value "Categories.Swords.Item" from "config" to "diamond sword"
+		set yaml value "Categories.Swords.Size" from "config" to 6
+		set yaml value "Categories.Swords.Slot" from "config" to 11
+		add "&eClick here to wiew" to yaml list "Categories.Swords.Lore" from "config"
+		add "&eSword category" to yaml list "Categories.Swords.Lore" from "config"
+		add "&eThere is lots of swords" to yaml list "Categories.Swords.Lore" from "config"
+		set yaml value "Categories.Swords.Items.Testitem.Name" from "config" to "&cPocan Item"
+		set yaml value "Categories.Swords.Items.Testitem.Item" from "config" to "gold block"
+		set yaml value "Categories.Swords.Items.Testitem.Amount" from "config" to 1
+		set yaml value "Categories.Swords.Items.Testitem.Slot" from "config" to 12
+		set yaml value "Categories.Swords.Items.Testitem.BuyPrice" from "config" to 1000
+		set yaml value "Categories.Swords.Items.Testitem.SellPrice" from "config" to 250
+		save yaml "config"
+	load yaml "plugins/PocanShop/language.yml" as "lang"
+	if yaml "lang" is empty:
+		set yaml value "Language.Succesfully-Category-Crate" from "lang" to "&7You succesfully created &a{category}&7. &b/category edit {category}"
+
+		set yaml value "Language.Succesfully-Bought" from "lang" to "&7You succesfully bought &a{amount} &7of &a{item} &7for &a${price}"
+		set yaml value "Language.Succesfully-Sold" from "lang" to "&7You succesfully sold &a{amount} &7of &a{item} &7for &a${price}"
+
+		set yaml value "Language.Not-Enought-Money" from "lang" to "&7You don't have enought money to purchase &a{amount} &7of &a{item} &7for &a${price}"
+		set yaml value "Language.Not-Have-Enought-Space" from "lang" to "&7You don't have enought space to purchase &a{amount} &7of &a{item} &7for &a${price}"
+		set yaml value "Language.Not-Have-Item" from "lang" to "&7You don't have &a{amount} &7of &a{item} &7for sell it."
+
+
+
+		add "&7&l-----------[&a&lPOCAN SHOP&7&l]-----------" to yaml list "Language.Help-Messages" from "lang"
+		add "" to yaml list "Language.Help-Messages" from "lang"
+		add "&a/shop &7► &fOpens shop gui" to yaml list "Language.Help-Messages" from "lang"
+		add "&a/shop create category &7► &fCrates shop category" to yaml list "Language.Help-Messages" from "lang"
+
+
+
+
+
+
+
+		set yaml value "GUI-Menus.Confirm" from "lang" to "&aConfirm"	
+		set yaml value "GUI-Menus.Cancel" from "lang" to "&cCancel"	
+		set yaml value "GUI-Menus.Buy-More" from "lang" to "&aBuy more"	
+		set yaml value "GUI-Menus.Sell-More" from "lang" to "&aSell more"	
+		set yaml value "GUI-Menus.Add-1" from "lang" to "&aAdd 1"
+		set yaml value "GUI-Menus.Add-10" from "lang" to "&aAdd 10"
+		set yaml value "GUI-Menus.Set-64" from "lang" to "&aSet 64"
+		set yaml value "GUI-Menus.Remove-1" from "lang" to "&cRemove 1"
+		set yaml value "GUI-Menus.Remove-10" from "lang" to "&cRemove 10"
+		set yaml value "GUI-Menus.Set-1" from "lang" to "&cSet it to 1"
+
+
+		set yaml value "GUI-Messages.Buy" from "lang" to "&aBuying {item} <3"
+		set yaml value "GUI-Messages.Sell" from "lang" to "&cSelling {item} <3"
+		set yaml value "GUI-Messages.ItemStack-Buy" from "lang" to "&aBuying Stacks"
+		set yaml value "GUI-Messages.ItemStack-Sell" from "lang" to "&cSelling Stacks"
+
+		add "" to yaml list "GUI-Messages.Buy-Lore" from "lang"
+		add "&7Buy price: &a{buyprice}" to yaml list "GUI-Messages.Buy-Lore" from "lang"
+		add "" to yaml list "GUI-Messages.Buy-Lore" from "lang"
+		
+
+		add "" to yaml list "GUI-Messages.Sell-Lore" from "lang"
+		add "&7Sell price: &a{sellprice}" to yaml list "GUI-Messages.Sell-Lore" from "lang"
+		add "" to yaml list "GUI-Messages.Sell-Lore" from "lang"
+
+
+		add "" to yaml list "GUI-Messages.Itemstack-Buy-Lore" from "lang"
+
+		add "&aYou're buyying {stack} stacks" to yaml list "GUI-Messages.Itemstack-Buy-Lore" from "lang"
+		add "&cPrice: {price}" to yaml list "GUI-Messages.Itemstack-Buy-Lore" from "lang"
+		add "" to yaml list "GUI-Messages.Itemstack-Buy-Lore" from "lang"
+		
+		
+		add "" to yaml list "GUI-Messages.Itemstack-Sell-Lore" from "lang"
+
+		add "&aYou're selling {stack} stacks" to yaml list "GUI-Messages.Itemstack-Sell-Lore" from "lang"
+		add "&cFor: {price}" to yaml list "GUI-Messages.Itemstack-Sell-Lore" from "lang"
+		add "" to yaml list "GUI-Messages.Itemstack-Sell-Lore" from "lang"		
+		
+
+		add "&7--------------------------" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&eAmount: {amount}" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&cBuy Price: {buyprice}" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&dSell Price: {sellprice}" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&7--------------------------" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&aClick right click to purchase" to yaml list "GUI-Messages.Main-Lore" from "lang"
+		add "&eClick left click to sell" to yaml list "GUI-Messages.Main-Lore" from "lang"
+	
+	
+		set yaml value "Editor-Menus.Category-Select" from "lang" to "&0Category Select"	
+		set yaml value "Editor-Menus.Size-Setter" from "lang" to "&0Size Setter > &7{category}"			
+		
+		set yaml value "Editor-Menus.GUI-Name" from "lang" to "&0Editor > &7{editor}"	
+
+		set yaml value "Editor-Menus.Name" from "lang" to "Gui Name"	
+		set yaml value "Editor-Menus.Item" from "lang" to "Item Name"	
+		set yaml value "Editor-Menus.Lore" from "lang" to "Lore"	
+
+		set yaml value "Editor-Menus.Size" from "lang" to "Size"	
+		set yaml value "Editor-Menus.Slot" from "lang" to "Slot"	
+
+
+		add "" to yaml list "Editor-Menus.Editor-Category-Select" from "lang"
+		add "&7Click to edit &a{category}" to yaml list "Editor-Menus.Editor-Category-Select" from "lang"
+		add "" to yaml list "Editor-Menus.Editor-Category-Select" from "lang"
+
+
+		add "" to yaml list "Editor-Menus.Editor-Size-Setter" from "lang"
+		add "&7Currently size value: &a{size}" to yaml list "Editor-Menus.Editor-Size-Setter" from "lang"
+		add "" to yaml list "Editor-Menus.Editor-Size-Setter" from "lang"
+
+
+
+		add "" to yaml list "Editor-Menus.Name-Lore" from "lang"
+		add "&7Currently name: &f{categoryname}" to yaml list "Editor-Menus.Name-Lore" from "lang"
+		add "" to yaml list "Editor-Menus.Name-Lore" from "lang"
+		add "&7▪ &aClick here to change name" to yaml list "Editor-Menus.Name-Lore" from "lang"
+
+		
+		add "" to yaml list "Editor-Menus.Item-Lore" from "lang"
+		add "&7Currently item: &f{item}" to yaml list "Editor-Menus.Item-Lore" from "lang"
+		add "" to yaml list "Editor-Menus.Item-Lore" from "lang"
+		add "&7▪ &aClick here to change gui item" to yaml list "Editor-Menus.Item-Lore" from "lang"
+
+
+		add "" to yaml list "Editor-Menus.Size-Lore" from "lang"
+		add "&7Currently size: &f{size}" to yaml list "Editor-Menus.Size-Lore" from "lang"
+		add "" to yaml list "Editor-Menus.Size-Lore" from "lang"
+		add "&7▪ &aClick here to change shop size" to yaml list "Editor-Menus.Size-Lore" from "lang"
+
+
+
+		add "" to yaml list "Editor-Menus.Slot-Lore" from "lang"
+		add "&7Currently slot: &f{slot}" to yaml list "Editor-Menus.Slot-Lore" from "lang"
+		add "" to yaml list "Editor-Menus.Slot-Lore" from "lang"
+		add "&7▪ &aClick here to change slot number" to yaml list "Editor-Menus.Slot-Lore" from "lang"
+		
+		add "" to yaml list "Editor-Menus.Lore-Lore" from "lang"
+		add "&7Currently lore: &f{lore}" to yaml list "Editor-Menus.Lore-Lore" from "lang"
+		add "" to yaml list "Editor-Menus.Lore-Lore" from "lang"
+		add "&7▪ &aClick here to change lore" to yaml list "Editor-Menus.Lore-Lore" from "lang"
+		
+		save yaml "lang"
+	load yaml "plugins/PocanShop/discord.yml" as "discord"
+	if yaml "discord" is empty:
+		set yaml value "Options.Token" from "discord" to ""
+		set yaml value "Options.PurchaseEvent-ChannelID" from "discord" to ""
+		set yaml value "Options.SellEvent-ChannelID" from "discord" to ""
+		set yaml value "Language.PurchaseEvent-Header" from "discord" to "Purchase Event"
+		set yaml value "Language.PurchaseEvent-Footer" from "discord" to "PocanShop - Best Shop Plugin"
+		set yaml value "Language.SellEvent-Header" from "discord" to "Sell Event"
+		set yaml value "Language.SellEvent-Footer" from "discord" to "PocanShop - Best Shop Plugin"
+		add "" to yaml list "Language.PurchaseEvent-Message" from "discord"
+		add "{player} bought {amount} of {item} for ${price}" to yaml list "Language.PurchaseEvent-Message" from "discord"
+		add "" to yaml list "Language.PurchaseEvent-Message" from "discord"
+		add "" to yaml list "Language.SellEvent-Message" from "discord"
+		add "{player} sold {amount} of {item} for ${price}" to yaml list "Language.SellEvent-Message" from "discord"
+		add "" to yaml list "Language.SellEvent-Message" from "discord"
+
+		save yaml "discord"
+		
+
+
+
+
+function PocanShopCategories(name : text, size : text, check : text, file : text, p : player):
+	open virtual chest inventory with size {_size} named "%{_name}%" to {_p}
+	loop yaml node keys {_check} from {_file}:
+		set {_val} to loop-value
+		set {_PocanShop::Category::Lore::*} to yaml list "Categories.%loop-value%.Lore" from {_file}
+		set {_PocanShop::Category::Name} to yaml value "Categories.%loop-value%.Name" from {_file}
+		set {_PocanShop::Category::Item} to yaml value "Categories.%loop-value%.Item" from {_file}
+		set {_PocanShop::Category::Size} to yaml value "Categories.%loop-value%.Size" from {_file}
+		set {_PocanShop::Category::Slot} to yaml value "Categories.%loop-value%.Slot" from {_file}
+		set {_item} to {_PocanShop::Category::Item} parsed as item
+		set {_item} to {_item} named {_PocanShop::Category::Name}
+		loop {_PocanShop::Category::Lore::*}:
+			set {_PocanShop::Category::Lore::%loop-index-2%} to colored loop-value-2
+		set {_lore} to "%{_PocanShop::Category::Lore::*}%"
+		replace all ", " and " and " in {_lore} with "||"
+		set lore of {_item} to "%{_PocanShop::Category::Lore::*}%"
+		make gui slot {_PocanShop::Category::Slot} of {_p} with {_item} with lore "%{_lore}%" to run:
+			PocanShopMain("%{_PocanShop::Category::Name}%", {_PocanShop::Category::Size}, "Categories.%{_val}%.Items", "config", {_p})
+			
+#Category.Swords.Items.ItemName
+
+#Category.%loop-value%.Items
+
+function PocanShopMain(name : text, size : object, check : text, file : text, p : player):
+	open virtual chest inventory with size {_size} named "%{_name}%" to {_p}
+	loop yaml node keys {_check} from {_file}:
+		set {_PocanShop::Shop::Name} to yaml value "%{_check}%.%loop-value%.Name" from {_file}
+		set {_PocanShop::Shop::Item} to yaml value "%{_check}%.%loop-value%.Item" from {_file}
+		set {_PocanShop::Shop::Amount} to yaml value "%{_check}%.%loop-value%.Amount" from {_file}
+		set {_PocanShop::Shop::Slot} to yaml value "%{_check}%.%loop-value%.Slot" from {_file}
+		set {_PocanShop::Shop::BuyPrice} to yaml value "%{_check}%.%loop-value%.BuyPrice" from {_file}
+		set {_PocanShop::Shop::SellPrice} to yaml value "%{_check}%.%loop-value%.SellPrice" from {_file}
+		set {_PocanShop::Shop::Lore::*} to yaml list "GUI-Messages.Main-Lore" from "lang"
+		loop {_PocanShop::Shop::Lore::*}:
+			set {_PocanShop::Shop::Lore::%loop-index-2%} to colored loop-value-2
+		set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+		replace "{amount}" in {_lore} with "%{_PocanShop::Shop::Amount}%"
+		replace "{buyprice}" in {_lore} with "%{_PocanShop::Shop::BuyPrice}%"
+		replace "{sellprice}" in {_lore} with "%{_PocanShop::Shop::SellPrice}%"
+		replace all ", " and " and " in {_lore} with "||"
+		set {_amount} to 1
+		make gui slot {_PocanShop::Shop::Slot} of {_p} with {_PocanShop::Shop::Amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to run: 
+			if clicked type = right mouse button:
+				set {_guiname} to yaml value "GUI-Messages.Buy" from "lang"
+				set {_PocanShop::Shop::Lore::*} to yaml list "GUI-Messages.Buy-Lore" from "lang"
+				loop {_PocanShop::Shop::Lore::*}:
+					set {_PocanShop::Shop::Lore::%loop-index-2%} to colored loop-value-2
+				set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+				replace "{item}" in {_guiname} with "%{_PocanShop::Shop::Item}%"
+				replace "{buyprice}" in {_lore} with "%{_PocanShop::Shop::BuyPrice}%"
+				replace all ", " and " and " in {_lore} with "||"	
+				open virtual chest inventory with size 6 named "%{_guiname}%" to {_p}	
+				make gui slot 22 of {_p} with ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing			
+				make gui slot 24 of {_p} with light green glass named "%yaml value ""GUI-Menus.Add-1"" from ""lang""%" to run:			
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory
+					if {_checker} < 64:								
+						set {_amount} to PocanShopAddProcess(1, {_PocanShop::Shop::BuyPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing									
+				make gui slot 25 of {_p} with light green glass named "%yaml value ""GUI-Menus.Add-10"" from ""lang""%" to run:	
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory
+					if {_checker} < 54:
+						set {_amount} to PocanShopAddProcess(10, {_PocanShop::Shop::BuyPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing	
+				make gui slot 26 of {_p} with light green glass named "%yaml value ""GUI-Menus.Set-64"" from ""lang""%" to run:
+					set {_amount} to PocanShopSetProcess(64, {_PocanShop::Shop::BuyPrice}, {_p})
+					set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})		
+					make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing		
+				make gui slot 39 of {_p} with light green glass block named "%yaml value ""GUI-Menus.Confirm"" from ""lang""%" to run:
+					set {_amount} to item amount of slot 22 of {_p}'s current inventory
+					set {_price} to {_PocanShop::Shop::BuyPrice} * {_amount}
+					PocanShopBuyEvent({_price}, {_amount}, {_PocanShop::Shop::Item}, {_p})				
+				make gui slot 41 of {_p} with red glass block named "%yaml value ""GUI-Menus.Cancel"" from ""lang""%" to run:
+					PocanShopMain({_name}, {_size}, {_check}, {_file}, {_p})									
+				make gui slot 49 of {_p} with 64 of light green glass block named "%yaml value ""GUI-Menus.Buy-More"" from ""lang""%" to run:			
+					set {_guiname} to yaml value "GUI-Messages.ItemStack-Buy" from "lang"
+					open virtual chest inventory with size 2 named "%{_guiname}%" to {_p}
+					loop 9 times:
+						set {_amount} to loop-number * 64 
+						set {_price} to loop-number * {_PocanShop::Shop::BuyPrice} * 64
+						set {_lore} to PocanShopLoreCheckerStack({_price}, loop-number, "GUI-Messages.Itemstack-Buy-Lore", "lang", {_p})
+						make gui slot loop-number - 1 of {_p} with loop-number of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to run:
+							PocanShopBuyEvent({_price}, {_amount}, {_PocanShop::Shop::Item}, {_p})
+					make gui slot 13 of {_p} with red glass named "%yaml value ""GUI-Menus.Cancel"" from ""lang""%" to run:
+						PocanShopMain({_name}, {_size}, {_check}, {_file}, {_p})
+				make gui slot 18 of {_p} with red glass named "%yaml value ""GUI-Menus.Set-1"" from ""lang""%" to run:
+					set {_amount} to PocanShopSetProcess(1, {_PocanShop::Shop::BuyPrice}, {_p})
+					set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})						
+					make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing					
+				make gui slot 19 of {_p} with red glass named "%yaml value ""GUI-Menus.Remove-10"" from ""lang""%" to run:
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory
+					if {_checker} > 10:				
+						set {_amount} to PocanShopSubtractProcess(10, {_PocanShop::Shop::BuyPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing		
+				make gui slot 20 of {_p} with red glass named "%yaml value ""GUI-Menus.Remove-1"" from ""lang""%" to run:
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory					
+					if {_checker} > 1:				
+						set {_amount} to PocanShopSubtractProcess(1, {_PocanShop::Shop::BuyPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing
+			else if clicked type = left mouse button:		
+				set {_guiname} to yaml value "GUI-Messages.Sell" from "lang"
+				set {_PocanShop::Shop::Lore::*} to yaml list "GUI-Messages.Sell-Lore" from "lang"
+				loop {_PocanShop::Shop::Lore::*}:
+					set {_PocanShop::Shop::Lore::%loop-index-2%} to colored loop-value-2
+				set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+				replace "{item}" in {_guiname} with "%{_PocanShop::Shop::Item}%"
+				replace "{sellprice}" in {_lore} with "%{_PocanShop::Shop::SellPrice}%"
+				replace all ", " and " and " in {_lore} with "||"			
+				open virtual chest inventory with size 6 named "%{_guiname}%" to {_p}		
+				make gui slot 22 of {_p} with ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing				
+				make gui slot 24 of {_p} with light green glass named "%yaml value ""GUI-Menus.Add-1"" from ""lang""%" to run:					
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory
+					if {_checker} < 64:						
+						set {_amount} to PocanShopAddProcess(1, {_PocanShop::Shop::SellPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing									
+				make gui slot 25 of {_p} with light green glass named "%yaml value ""GUI-Menus.Add-10"" from ""lang""%" to run:	
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory			
+					if {_checker} < 54:
+						set {_amount} to PocanShopAddProcess(10, {_PocanShop::Shop::SellPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing	
+				make gui slot 26 of {_p} with light green glass named "%yaml value ""GUI-Menus.Set-64"" from ""lang""%" to run:
+					set {_amount} to PocanShopSetProcess(64, {_PocanShop::Shop::SellPrice}, {_p})
+					set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})						
+					make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing					
+				make gui slot 39 of {_p} with light green glass block named "%yaml value ""GUI-Menus.Confirm"" from ""lang""%" to run:
+					set {_amount} to item amount of slot 22 of {_p}'s current inventory
+					set {_price} to {_PocanShop::Shop::SellPrice} * {_amount}
+					PocanShopSellEvent({_price}, {_amount}, {_PocanShop::Shop::Item}, {_p})		
+				make gui slot 41 of {_p} with red glass block named "%yaml value ""GUI-Menus.Cancel"" from ""lang""%" to run:
+					PocanShopMain({_name}, {_size}, {_check}, {_file}, {_p})									
+				make gui slot 49 of {_p} with 64 of light green glass block named "%yaml value ""GUI-Menus.Sell-More"" from ""lang""%" to run:		
+					set {_guiname} to yaml value "GUI-Messages.ItemStack-Sell" from "lang"
+					open virtual chest inventory with size 2 named "%{_guiname}%" to {_p}
+					loop 9 times:
+						set {_amount} to loop-number * 64 
+						set {_price} to loop-number * {_PocanShop::Shop::SellPrice} * 64
+						set {_lore} to PocanShopLoreCheckerStack({_price}, loop-number, "GUI-Messages.Itemstack-Sell-Lore", "lang", {_p})
+						make gui slot loop-number - 1 of {_p} with loop-number of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to run:
+							PocanShopSellEvent({_price}, {_amount}, {_PocanShop::Shop::Item}, {_p})
+					make gui slot 13 of {_p} with red glass named "%yaml value ""GUI-Menus.Cancel"" from ""lang""%" to run:
+						PocanShopMain({_name}, {_size}, {_check}, {_file}, {_p})					
+				make gui slot 18 of {_p} with red glass named "%yaml value ""GUI-Menus.Set-1"" from ""lang""%" to run:
+					set {_amount} to PocanShopSetProcess(1, {_PocanShop::Shop::SellPrice}, {_p})
+					set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})						
+					make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing					
+				make gui slot 19 of {_p} with red glass named "%yaml value ""GUI-Menus.Remove-10"" from ""lang""%" to run:
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory
+					if {_checker} > 10:				
+						set {_amount} to PocanShopSubtractProcess(10, {_PocanShop::Shop::SellPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing					
+				make gui slot 20 of {_p} with red glass named "%yaml value ""GUI-Menus.Remove-1"" from ""lang""%" to run:
+					set {_checker} to item amount of slot 22 of {_p}'s current inventory					
+					if {_checker} > 1:				
+						set {_amount} to PocanShopSubtractProcess(1, {_PocanShop::Shop::SellPrice}, {_p})
+						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::SellPrice}, "sellprice", "GUI-Messages.Sell-Lore", "lang", {_p})		
+						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing			
+
+
+
+
+	
+
+function PocanShopAddProcess(value : int, price : object, p : player) :: int:
+	set {_amount} to item amount of slot 22 of {_p}'s current inventory
+	add {_value} to {_amount}
+	return {_amount}
+			
+
+function PocanShopSubtractProcess(value : int, price : object, p : player) :: int:
+	set {_amount} to item amount of slot 22 of {_p}'s current inventory
+	remove {_value} from {_amount}
+	return {_amount}
+	
+
+function PocanShopSetProcess(value : int, price : object, p : player) :: int:
+	set {_amount} to {_value}
+	return {_amount}
+
+function PocanShopLoreChecker(amount : object, price : object, var : text, check : text, file : text, p : player) :: text:
+	set {_PocanShop::Shop::Lore::*} to yaml list "%{_check}%" from {_file}			
+	loop {_PocanShop::Shop::Lore::*}:
+		set {_PocanShop::Shop::Lore::%loop-index%} to colored loop-value
+	set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+	replace "{%{_var}%}" in {_lore} with "%{_amount} * {_price}%"
+	replace all ", " and " and " in {_lore} with "||"
+	return {_lore}
+
+function PocanShopLoreCheckerStack(price : object, stack : int, check : text, file : text, p : player) :: text:
+	set {_PocanShop::Shop::Lore::*} to yaml list "%{_check}%" from {_file}			
+	loop {_PocanShop::Shop::Lore::*}:
+		set {_PocanShop::Shop::Lore::%loop-index%} to colored loop-value
+	set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+	replace "{price}" in {_lore} with "%{_price}%"
+	replace "{stack}" in {_lore} with "%{_stack}%"
+	replace all ", " and " and " in {_lore} with "||"
+	return {_lore}	
+
+function PocanShopReplacer(t : text, price : object, item : object, amount : object) :: text:
+	replace all "{price}" in {_t} with "%{_price}%"
+	replace all "{item}" in {_t} with "%{_item}%"
+	replace all "{amount}" in {_t} with "%{_amount}%"
+	return {_t}
+	
+function PocanShopBuyEvent(price : object, amount : object, item : object, p : player):
+	if {_p}'s balance >= {_amount} * {_price}:
+		if {_p} has enough space for {_amount} of ({_item} parsed as item):
+			remove {_price} from {_p}'s balance	
+			set {_text} to PocanShopReplacer(yaml value "Language.Succesfully-Bought" from "lang", {_price}, {_item}, {_amount})		
+			give {_amount} of ({_item} parsed as item) to {_p}		
+			send "%{_text}%" to {_p}
+			PocanShopDiscordAPI({_price}, {_amount}, {_item}, "Options.PurchaseEvent-ChannelID", "Language.PurchaseEvent-Header", "Language.PurchaseEvent-Footer", "Language.PurchaseEvent-Message", "discord", {_p})	
+		else:
+			set {_text} to PocanShopReplacer(yaml value "Language.Not-Have-Enought-Space" from "lang", {_price}, {_item}, {_amount})
+			send "%{_text}%" to {_p}
+	else:
+		set {_text} to PocanShopReplacer(yaml value "Language.Not-Enought-Money" from "lang", {_price}, {_item}, {_amount})
+		send "%{_text}%" to {_p}
+
+
+function PocanShopSellEvent(price : object, amount : object, item : object, p : player):
+	if "%{_p}%" parsed as player has {_amount} of ({_item} parsed as item):
+		add {_price} to {_p}'s balance
+		remove {_amount} of ({_item} parsed as item) from {_p}'s inventory
+		set {_text} to PocanShopReplacer(yaml value "Language.Succesfully-Sold" from "lang", {_price}, {_item}, {_amount})
+		send "%{_text}%" to {_p}
+		PocanShopDiscordAPI({_price}, {_amount}, {_item}, "Options.SellEvent-ChannelID", "Language.SellEvent-Header", "Language.SellEvent-Footer", "Language.SellEvent-Message", "discord", {_p})	
+	else:
+		set {_text} to PocanShopReplacer(yaml value "Language.Not-Have-Item" from "lang", {_price}, {_item}, {_amount})
+		send "%{_text}%" to {_p}		
+			
+
+function PocanShopDiscordAPI(price : object, amount : object, item : object, channel : text, header : text, footer : text, check : text, file : text, p : player):
+	set {_PocanShop::DiscordAPI-Messages::*} to yaml list "%{_check}%" from {_file}
+	set {_discordapi} to "%{_PocanShop::DiscordAPI-Messages::*}%"
+	replace "{amount}" in {_discordapi} with "%{_amount}%"
+	replace "{item}" in {_discordapi} with "%{_item}%"
+	replace "{price}" in {_discordapi} with "%{_price}%"
+	replace "{player}" in {_discordapi} with "%{_p}%"
+	replace all "_" in {_discordapi} with " "
+	replace all ", " and " and " in {_discordapi} with nl
+	create embed:
+		set the author info of the embed to author named yaml value "%{_header}%" from "discord" with no url and no icon
+		set description of embed to "%{_discordapi}%"
+		set color of the embed to red
+		set the footer of embed to footer with text yaml value "%{_footer}%" from "discord"
+		set the timestamp of embed to now
+	send last created embed to channel with ID yaml value "%{_channel}%" from "discord" with "PocanShop"
+
+
+function PocanShopMessage(message : text, type : text):
+	if {_type} is "Console":
+		send "&7[&ePocanShop&7] &a%{_message}%" to console
+	else:
+		send "&bPocanShop &7► &c%{_message}%" to all players where [player input has permission "PocanShop.Admin"]
+
+
+function PocanShopCategoryCreateEvent(category : text):
+	set yaml value "Categories.%{_category}%.Name" from "config" to ""
+#	set yaml value "Categories.%{_category}%.Item" from "config" to ""
+	set yaml value "Categories.%{_category}%.Size" from "config" to 1
+#	set yaml value "Categories.%{_category}%.Slot" from "config" to ""
+	save yaml "config"
+		
+function PocanShopReplacerTool(var : text, replace : text, string : text) :: text:
+	replace all "{%{_var}%}" in {_string} with "%{_replace}%"
+	return {_string}
+
+function PocanShopLoreCheckerTool(check : text, file : text) :: text:
+	set {_PocanShop::Shop::Lore::*} to yaml list "%{_check}%" from {_file}			
+	loop {_PocanShop::Shop::Lore::*}:
+		set {_PocanShop::Shop::Lore::%loop-index%} to colored loop-value
+	set {_lore} to "%{_PocanShop::Shop::Lore::*}%"
+	replace all ", " and " and " in {_lore} with "||"
+	return {_lore}
+
+
+command debugali:
+	trigger:
+		PocanShopCategorySlotSetter("Swords", player)
+
+
+function PocanShopSizeSetter(var : text, p : player):
+#	set {_amount} to item amount of slot 22 of {_p}'s current inventory
+	set {_name} to PocanShopReplacerTool("category", "%{_var}%", "%yaml value ""Editor-Menus.Size-Setter"" from ""lang""%")
+	set {_lore} to PocanShopLoreCheckerTool("Editor-Menus.Editor-Size-Setter", "lang")
+	set {_amount} to yaml value "Categories.%{_var}%.Size" from "config"
+	set {_lorem} to PocanShopReplacerTool("size", "%{_amount}%", "%{_lore}%")
+	open virtual chest inventory with size 6 named "%{_name}%" to {_p}
+
+	make gui slot (numbers between 0 and 9),(numbers between 45 and 53),9,17,18,26,27,35,36 and 44 of {_p} with black glass pane named "&b" to nothing
+	make gui slot 22 of {_p} with yaml value "Categories.%{_var}%.Size" from "config" of 416 named "%{_var}%" with lore "%{_lorem}%" to nothing		
+	make gui slot 24 of {_p} with light green glass named "%yaml value ""GUI-Menus.Add-1"" from ""lang""%" to run:
+		set {_amount} to item amount of slot 22 of {_p}'s current inventory
+		if {_amount} < 6:
+			add 1 to {_amount}
+			set {_lore} to PocanShopLoreCheckerTool("Editor-Menus.Editor-Size-Setter", "lang")
+
+			set {_lorem} to PocanShopReplacerTool("size", "%{_amount}%", "%{_lore}%")
+			make gui slot 22 of {_p} with {_amount} of 416 named "%{_var}%" with lore "%{_lorem}%" to nothing		
+	make gui slot 20 of {_p} with red glass named "%yaml value ""GUI-Menus.Remove-1"" from ""lang""%" to run:
+		set {_amount} to item amount of slot 22 of {_p}'s current inventory
+		if {_amount} > 1:
+			remove 1 from {_amount}
+			
+			set {_lore} to PocanShopLoreCheckerTool("Editor-Menus.Editor-Size-Setter", "lang")
+
+			set {_lorem} to PocanShopReplacerTool("size", "%{_amount}%", "%{_lore}%")
+			make gui slot 22 of {_p} with {_amount} of 416 named "%{_var}%" with lore "%{_lorem}%" to nothing					
+		
+	make gui slot 40 of {_p} with green glass block named "%yaml value ""GUI-Menus.Confirm"" from ""lang""%" to run:
+		set {_amount} to item amount of slot 22 of {_p}'s current inventory
+		set yaml value "Categories.%{_var}%.Size" from "config" to {_amount}
+		save yaml "config"
+		execute {_p} command "shop category edit %{_var}%"
+
+
+function PocanShopCategorySlotSetter(var : text, p : player):
+	loop yaml node keys "Categories" from "config":
+		add loop-value to {_list::*}
+		broadcast "%{_list::*}%"
+	
+	broadcast yaml value "Categories.%{_list::*}%.Slot" from "config"
+	add yaml value "Categories.%{_list::*}%.Slot" from "config" to {_liste::*}
+	
+	broadcast "%{_liste::*}%"
+	make gui slot {_seclist::*} of {_p} with ender pearl named "a" with lore "%{_lore2}%" to run:
+
+		
+	
+
+	
+#						set {_amount} to PocanShopAddProcess(10, {_PocanShop::Shop::BuyPrice}, {_p})
+#						set {_lore} to PocanShopLoreChecker({_amount}, {_PocanShop::Shop::BuyPrice}, "buyprice", "GUI-Messages.Buy-Lore", "lang", {_p})		
+#						make gui slot 22 of {_p} with {_amount} of ({_PocanShop::Shop::Item} parsed as item) named "%{_PocanShop::Shop::Name}%" with lore "%{_lore}%" to nothing	
+
+
+command shop [<text>] [<text>] [<text>]:
+	aliases: market
+	trigger:
+		if arg-1 is set:
+			if arg-1 is "category":
+				if arg-2 is "create":
+					if arg-3 is set:
+						if player has permission "pocanshop.createcategory" or "pocanshop.*":
+							PocanShopCategoryCreateEvent(arg-3)
+							set {_m} to PocanShopReplacerTool("category", arg-3, "%yaml value ""Language.Succesfully-Category-Crate"" from ""lang""%")
+							send "%{_m}%" to player
+				else if arg-2 is "edit":
+					if arg-3 is set:
+						loop yaml node keys "Categories" from "config":							
+							add loop-value to {_list::*}
+						{_list::*} contains arg-3:
+							set {_arg} to arg-3
+							set {_PocanShop::Shop::Name} to yaml value "Categories.%arg-3%.Name" from "config"
+							set {_PocanShop::Shop::Item} to yaml value "Categories.%arg-3%.Item" from "config"
+							set {_PocanShop::Shop::Size} to yaml value "Categories.%arg-3%.Size" from "config"
+							set {_PocanShop::Shop::Slot} to yaml value "Categories.%arg-3%.Slot" from "config"
+							set {_PocanShop::Category::Lore::*} to yaml list "Categories.%arg-3%.Lore" from "config"							
+							loop {_PocanShop::Category::Lore::*}:
+								set {_PocanShop::Category::Lore::%loop-index%} to colored loop-value
+							set {_lore} to "%{_PocanShop::Category::Lore::*}%"
+							replace all ", " and " and " in {_lore} with "||"
+
+							set {_name1} to PocanShopLoreCheckerTool("Editor-Menus.Name-Lore", "lang")							
+							set {_name2} to PocanShopReplacerTool("categoryname", "%{_PocanShop::Shop::Name}%", "%{_name1}%")
+							
+							set {_item1} to PocanShopLoreCheckerTool("Editor-Menus.Item-Lore", "lang")
+							set {_item2} to PocanShopReplacerTool("item", "%{_PocanShop::Shop::Item}%", "%{_item1}%")
+							
+							set {_size1} to PocanShopLoreCheckerTool("Editor-Menus.Size-Lore", "lang")		
+							set {_size2} to PocanShopReplacerTool("size", "%{_PocanShop::Shop::Size}%", "%{_size1}%")
+
+							set {_slot1} to PocanShopLoreCheckerTool("Editor-Menus.Slot-Lore", "lang")		
+							set {_slot2} to PocanShopReplacerTool("slot", "%{_PocanShop::Shop::Slot}%", "%{_slot1}%")			
+
+							set {_lore1} to PocanShopLoreCheckerTool("Editor-Menus.Lore-Lore", "lang")
+							set {_lore2} to PocanShopReplacerTool("lore", "%{_lore}%", "%{_lore1}%")			
+		
+							set {_gui} to PocanShopReplacerTool("editor", arg-3, "%yaml value ""Editor-Menus.GUI-Name"" from ""lang""%")
+							loop 9 times:
+								add "&%loop-number%" to {_batınyarrak::*}
+							open virtual chest inventory with size 6 named "%{_gui}%" to player
+							while name of player's current inventory is "%{_gui}%":
+								set {_rainbow} to "%random element out of {_batınyarrak::*}%"
+								set {_rainbow} to "%coloured {_rainbow}%"
+
+								make gui slot 1,10,19,28,37 and 46 of player with black glass pane named "&b" to nothing
+								make gui slot 12 of player with tnt named "%{_rainbow}%%yaml value ""Editor-Menus.Name"" from ""lang""%" with lore "%{_name2}%" to nothing
+								make gui slot 14 of player with 416 named "%{_rainbow}%%yaml value ""Editor-Menus.Item"" from ""lang""%" with lore "%{_item2}%" to nothing
+								make gui slot 16 of player with light gray wool named "%{_rainbow}%%yaml value ""Editor-Menus.Lore"" from ""lang""%" with lore "%{_lore2}%" to nothing
+								
+								make gui slot 30 of player with lava bucket named "%{_rainbow}%%yaml value ""Editor-Menus.Size"" from ""lang""%" with lore "%{_size2}%" to run:
+									PocanShopSizeSetter("%{_arg}%", player)
+
+								make gui slot 32 of player with ender pearl named "%{_rainbow}%%yaml value ""Editor-Menus.Slot"" from ""lang""%" with lore "%{_slot2}%" to nothing
+
+
+									
+
+
+								wait 1 seconds
+					else:
+						set {_slot} to -1
+						set {_lore1} to PocanShopLoreCheckerTool("Editor-Menus.Editor-Category-Select", "lang")		
+
+						open virtual chest inventory with size 6 named "%yaml value ""Editor-Menus.Category-Select"" from ""lang""%" to player
+
+						loop yaml node keys "Categories" from "config":
+							set {_command} to loop-value
+							add 1 to {_slot}
+							set {_lore2} to PocanShopReplacerTool("category", loop-value, "%{_lore1}%")			
+
+							make gui slot {_slot} of player with ender pearl named "%loop-value%" with lore "%{_lore2}%" to run:
+								execute player command "shop category edit %{_command}%"
+
+						
+						
+						
+					
+				
+			else if arg-1 is "help" or "yardım":
+				send "eklenecek"
+			
+			else if arg-1 is "reload":
+				load yaml "config"
+				load yaml "lang"
+				load yaml "discord"
+				send "reload"
+
+		else:
+			PocanShopCategories(yaml value "Menu.Name" from "config", yaml value "Menu.Size" from "config", "Categories", "config", player)
+			
+
+
+
+
